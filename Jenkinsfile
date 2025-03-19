@@ -16,6 +16,13 @@ pipeline {
             }
         }
 
+        stage("Terraform Destroy") {
+            steps {
+                echo "Executing Terraform Destroy"
+                sh "terraform destroy -auto-approve"
+            }
+        }
+
         stage("Terraform Init") {
             steps {
                 echo "Executing Terraform Init"
