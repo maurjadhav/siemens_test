@@ -1,11 +1,6 @@
-#variable "first_name" {
-#  type        = string
-#  description = "Your first name"
-#  default     = "mayur"
-#}
-#
-#variable "last_name" {
-#  type        = string
-#  description = "Your last name"
-#  default     = "jadhav"
-#}
+variable "lambda_fun_name" {
+    type = string
+    description = "This is the lambda function name"
+    default = "lambda_fun"
+  
+}
