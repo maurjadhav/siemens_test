@@ -8,7 +8,7 @@ pipeline {
         LAMBDA_FUNCTION_NAME = "lambda_fun"
     }
 
-//    stages {
+    stages {
 //        stage("Checkout Code") {
 //            steps {
 //                git branch: 'main', url: 'https://github.com/maurjadhav/siemens_test.git'
