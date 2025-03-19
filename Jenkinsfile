@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
         TF_STATE_KEY = "Mayur.Jadhav"
-        LAMBDA_FUNCTION_NAME = "minimal_lambda"
+        LAMBDA_FUNCTION_NAME = "minimal_lambda1"
     }
 
     stages {
@@ -74,6 +74,17 @@ pipeline {
                         --log-type Tail output.json
                     """
                     echo "Lambda function invoked successfully!"
+                }
+            }
+        }
+
+        stage("Check CloudWatch Logs") {
+            steps {
+                script {
+                    echo "Fetching AWS Lambda Logs from CloudWatch"
+                    sh """
+                        aws logs tail /aws/lambda/$LAMBDA_FUNCTION_NAME --region $AWS_REGION --since 5m --format short
+                    """
                 }
             }
         }
