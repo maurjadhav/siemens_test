@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
         TF_STATE_KEY = "Mayur.Jadhav"
-        LAMBDA_FUNCTION_NAME = "ab"
+        LAMBDA_FUNCTION_NAME = "ac"
     }
 
     stages {
@@ -63,20 +63,33 @@ pipeline {
             }
         }
 
-        stage("Invoke Lambda") {
+        stage('Invoke Lambda') {
             steps {
                 script {
-                    echo "Invoking AWS Lambda Function"
-                    sh """
-                        aws lambda invoke \
-                        --function-name $LAMBDA_FUNCTION_NAME \
-                        --region $AWS_REGION \
-                        --log-type Tail output.json
-                    """
-                    echo "Lambda function invoked successfully!"
+                    try {
+                        def response = sh(script: 'aws lambda invoke --function-name your-lambda-function-name --payload \'{"key": "value"}\' output.json', returnStdout: true).trim()
+                        echo "Lambda response: ${response}"
+                    } catch (Exception e) {
+                        error "Lambda invocation failed: ${e.getMessage()}"
+                    }
                 }
             }
         }
+
+//        stage("Invoke Lambda") {
+//            steps {
+//                script {
+//                    echo "Invoking AWS Lambda Function"
+//                    sh """
+//                        aws lambda invoke \
+//                        --function-name $LAMBDA_FUNCTION_NAME \
+//                        --region $AWS_REGION \
+//                        --log-type Tail output.json
+//                    """
+//                    echo "Lambda function invoked successfully!"
+//                }
+//            }
+//        }
 
         stage("Check CloudWatch Logs") {
             steps {
