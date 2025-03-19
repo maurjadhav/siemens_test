@@ -1,30 +1,54 @@
-pipeline{
+pipeline {
     agent any
-    stages{
-        stage("TF Init"){
-            steps{
-                echo "Executing Terraform Init"
+
+    environment {
+        AWS_REGION = "ap-south-1"
+        S3_BUCKET  = "467.devops.candidate.exam"
+        TF_STATE_KEY = "mayur jadhav"
+        LAMBDA_FUNCTION_NAME = "invoke_api_lambda"
+    }
+
+    stages {
+        stage("TF Init") {
+            steps {
+                script {
+                    echo "Executing Terraform Init"
+                    sh """
+                        terraform init \
+                        -backend-config="bucket=$S3_BUCKET" \
+                        -backend-config="key=$TF_STATE_KEY" \
+                        -backend-config="region=$AWS_REGION"
+                    """
+                }
             }
         }
-        stage("TF Validate"){
-            steps{
-                echo "Validating Terraform Code"
+
+        stage("TF Validate") {
+            steps {
+                script {
+                    echo "Validating Terraform Code"
+                    sh "terraform validate"
+                }
             }
         }
-        stage("TF Plan"){
-            steps{
-                echo "Executing Terraform Plan"
+
+        stage("TF Plan") {
+            steps {
+                script {
+                    echo "Executing Terraform Plan"
+                    sh "terraform plan -out=tfplan"
+                }
             }
         }
-        stage("TF Apply"){
-            steps{
-                echo "Executing Terraform Apply"
-            }
+
+    }
+
+    post {
+        success {
+            echo "Pipeline executed successfully!"
         }
-        stage("Invoke Lambda"){
-            steps{
-                echo "Invoking your AWS Lambda"
-            }
+        failure {
+            echo "Pipeline execution failed!"
         }
     }
 }
