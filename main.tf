@@ -49,10 +49,10 @@ resource "aws_security_group" "lambda_sg" {
 }
 
 # AWS Lambda Function
-resource "aws_lambda_function" "this" {
-  function_name = "mayur_function"
+resource "aws_lambda_function" "mayur_function1" {
+  function_name = "mayur_function1"
   role          = data.aws_iam_role.lambda.arn
-  handler       = "this.lambda_handler"
+  handler       = "mayur_function1.lambda_handler"
   runtime       = "python3.11"
   filename      = "xyz_function.zip"
   timeout       = 10
@@ -74,6 +74,6 @@ resource "aws_lambda_function" "this" {
 
 # CloudWatch Log Group for Lambda
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.this.function_name}"
+  name              = "/aws/lambda/${aws_lambda_function.mayur_function1.function_name}"
   retention_in_days = 7
 }
