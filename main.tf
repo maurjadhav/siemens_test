@@ -31,13 +31,13 @@ resource "aws_subnet" "private_subnet" {
 #  }
 #}
 
-# Associate Route Table with Private Subnet
-resource "aws_route_table_association" "private_assoc" {
-  subnet_id      = aws_subnet.private_subnet.id
-  route_table_id = aws_route_table.private_rt.id
-
-  depends_on = [aws_subnet.private_subnet] # Ensures the subnet is created first
-}
+## Associate Route Table with Private Subnet
+#resource "aws_route_table_association" "private_assoc" {
+#  subnet_id      = aws_subnet.private_subnet.id
+#  route_table_id = aws_route_table.private_rt.id
+#
+#  depends_on = [aws_subnet.private_subnet] # Ensures the subnet is created first
+#}
 
 # Security Group for Lambda inside VPC
 resource "aws_security_group" "lambda_sg" {
