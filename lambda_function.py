@@ -8,40 +8,34 @@ import requests
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-# Constants
 API_URL = "https://bc1yy8dzsg.execute-api.eu-west-1.amazonaws.com/v1/data"
 HEADERS = {'X-Siemens-Auth': 'test'}
 
 def lambda_handler(event, context):
-    """
-    AWS Lambda function to invoke Siemens API from a private subnet.
-    
-    Returns:
-        dict: API response with status code and body.
-    """
     try:
-        # Fetching environment variables from Terraform
+        # Fetching the subnet ID dynamically from environment variables
         subnet_id = os.getenv("SUBNET_ID")
         name = os.getenv("NAME", "Mayur Jadhav")
         email = os.getenv("EMAIL", "mr.jadhav1205@gmail.com")
 
         if not subnet_id:
-            raise ValueError("SUBNET_ID environment variable is missing")
+            raise ValueError("Missing subnet ID in environment variables")
 
-        # Payload for API request
+        # Construct the payload
         payload = {
             "subnet_id": subnet_id,
             "name": name,
             "email": email
         }
 
-        logger.info("Sending POST request to Siemens API...")
+        logger.info(f"Sending request to Siemens API: {payload}")
+
+        # Send POST request
         response = requests.post(API_URL, headers=HEADERS, json=payload)
 
-        # Decode Base64 log output (for Jenkins)
+        # Decode Base64 logs for Jenkins output
         log_result = base64.b64encode(response.text.encode()).decode()
 
-        # Return API response
         return {
             "statusCode": response.status_code,
             "body": response.text,

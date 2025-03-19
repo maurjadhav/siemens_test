@@ -1,7 +1,7 @@
 # Private Subnet 
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = data.aws_vpc.vpc.id
-  cidr_block              = "10.0.10.0/24" # Change if needed
+  cidr_block              = "10.0.20.0/24" # Change if needed
   availability_zone       = "ap-south-1a"
   map_public_ip_on_launch = false
 
@@ -50,33 +50,29 @@ resource "aws_security_group" "lambda_sg" {
 # AWS Lambda Function
 resource "aws_lambda_function" "lambda_function" {
   function_name = "invoke_api_lambda"
-  filename      = "lambda_function.zip"
-  role          = data.aws_iam_role.lambda.arn
+  role          = "<Provided_Lambda_IAM_Role>"
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.11"
+  filename      = "lambda_function.zip"
   timeout       = 10
-  memory_size   = 128
+
+  environment {
+    variables = {
+      SUBNET_ID = aws_subnet.private_subnet.id    # Dynamically pass subnet ID
+      NAME      = "Mayur Jadhav"
+      EMAIL     = "mr.jadhav1205@gmail.com"
+    }
+  }
 
   vpc_config {
     subnet_ids         = [aws_subnet.private_subnet.id]
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
-
-  environment {
-    variables = {
-      SUBNET_ID = aws_subnet.private_subnet.id
-      NAME      = "mayur_jadhav"
-      EMAIL     = "mr.jadhav1205@gmail.com"
-    }
-  }
-
-  tags = {
-    Name = "Lambda-Function"
-  }
 }
 
-## CloudWatch Log Group for Lambda
-#resource "aws_cloudwatch_log_group" "lambda_log_group" {
-#  name              = "/aws/lambda/${aws_lambda_function.lambda_function.function_name}"
-#  retention_in_days = 7
-#}
+
+# CloudWatch Log Group for Lambda
+resource "aws_cloudwatch_log_group" "lambda_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.lambda_function.function_name}"
+  retention_in_days = 7
+}

@@ -1,97 +1,45 @@
 pipeline {
     agent any
 
-//    triggers {
-//        pollSCM('H/5 * * * *')  // Uncomment to run every 5 minutes
-//    }
-
     environment {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
-        TF_STATE_KEY = "mayur jadhav"
+        TF_STATE_KEY = "mayur.jadhav"
         LAMBDA_FUNCTION_NAME = "invoke_api_lambda"
     }
 
     stages {
-        stage("Package Lambda Function") {
+        stage("Package Lambda") {
             steps {
-                script {
-                    echo "Packaging Lambda function"
-                    sh """
-                        zip lambda_function.zip lambda_function.py || echo "Lambda function packaging failed!"
-                    """
-                }
+                sh "zip lambda_function.zip lambda_function.py"
             }
         }
 
-        stage("TF Init") {
+        stage("Terraform Init") {
             steps {
-                script {
-                    echo "Executing Terraform Init"
-                    sh """
-                        terraform init \
-                        -backend-config="bucket=$S3_BUCKET" \
-                        -backend-config="key=$TF_STATE_KEY" \
-                        -backend-config="region=$AWS_REGION"
-                    """
-                }
+                sh "terraform init"
             }
         }
 
-        stage("TF Validate") {
+        stage("Terraform Plan") {
             steps {
-                script {
-                    echo "Validating Terraform Code"
-                    sh "terraform validate"
-                }
+                sh "terraform plan"
             }
         }
 
-        stage("TF Plan") {
+        stage("Terraform Apply") {
             steps {
-                script {
-                    echo "Executing Terraform Plan"
-                    sh "terraform plan"
-                }
+                sh "terraform apply -auto-approve"
             }
         }
 
-        stage("TF Apply") {
+        stage("Invoke Lambda") {
             steps {
-                script {
-                    echo "Executing Terraform Apply"
-                    sh "terraform apply -auto-approve"
-                }
+                sh """
+                    aws lambda invoke --function-name $LAMBDA_FUNCTION_NAME --log-type Tail output.json
+                    jq -r '.LogResult' output.json | base64 --decode
+                """
             }
-        }
-
-//        stage("Invoke Lambda") {
-//            steps {
-//                script {
-//                    echo "Invoking AWS Lambda Function"
-//                    sh """
-//                        aws lambda invoke \
-//                        --function-name $LAMBDA_FUNCTION_NAME \
-//                        --region $AWS_REGION \
-//                        --log-type Tail \
-//                        output.json > lambda_response.json
-//
-//                        # Extract and decode the LogResult
-//                        LOG_RESULT=\$(jq -r '.LogResult' lambda_response.json)
-//                        echo \$LOG_RESULT | base64 --decode
-//                    """
-//                }
-//            }
-//        }
-
-    }
-
-    post {
-        success {
-            echo "Pipeline executed successfully!"
-        }
-        failure {
-            echo "Pipeline execution failed!"
         }
     }
 }
