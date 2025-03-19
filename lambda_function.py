@@ -1,7 +1,6 @@
 import json
 import os
 import logging
-import base64
 import requests
 
 # Configure logging
@@ -33,18 +32,17 @@ def lambda_handler(event, context):
         # Send POST request
         response = requests.post(API_URL, headers=HEADERS, json=payload)
 
-        # Decode Base64 logs for Jenkins output
-        log_result = base64.b64encode(response.text.encode()).decode()
+        # Log response directly (no Base64 encoding)
+        logger.info(f"API Response: {response.text}")
 
         return {
             "statusCode": response.status_code,
-            "body": response.text,
-            "logResult": log_result  # Base64 encoded log output for Jenkins
+            "body": response.text
         }
 
     except Exception as e:
         logger.error("Error: %s", str(e), exc_info=True)
         return {
             "statusCode": 500,
-            "body": json.dumps({"error": "Internal Server Error"}),
+            "body": json.dumps({"error": "Internal Server Error"})
         }
