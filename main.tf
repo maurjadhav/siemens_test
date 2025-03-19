@@ -49,12 +49,12 @@ resource "aws_security_group" "lambda_sg" {
 }
 
 # AWS Lambda Function
-resource "aws_lambda_function" "lambda_fun" {
+resource "aws_lambda_function" "xyz_function" {
   function_name = "api_lambda"
   role          = data.aws_iam_role.lambda.arn
-  handler       = "lambda_function.lambda_handler"
+  handler       = "xyz_function.lambda_handler"
   runtime       = "python3.11"
-  filename      = "lambda_function.zip"
+  filename      = "xyz_function.zip"
   timeout       = 10
 
   environment {
@@ -74,6 +74,6 @@ resource "aws_lambda_function" "lambda_fun" {
 
 # CloudWatch Log Group for Lambda
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.lambda_fun.function_name}"
+  name              = "/aws/lambda/${aws_lambda_function.xyz_function.function_name}"
   retention_in_days = 7
 }

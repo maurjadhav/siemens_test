@@ -12,7 +12,7 @@ pipeline {
         stage("Package Lambda") {
             steps {
                 echo "Packaging Lambda function"
-                sh "zip lambda_function.zip lambda_function.py"
+                sh "zip xyz_function.zip lambda_function.py"
             }
         }
 
