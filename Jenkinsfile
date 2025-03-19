@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
         TF_STATE_KEY = "Mayur.Jadhav"
-        LAMBDA_FUNCTION_NAME = "ac"
+        LAMBDA_FUNCTION_NAME = "ad"
     }
 
     stages {
@@ -63,12 +63,31 @@ pipeline {
             }
         }
 
-        stage('Invoke Lambda') {
+        stage("Invoke Lambda") {
             steps {
                 script {
                     try {
-                        def response = sh(script: 'aws lambda invoke --function-name your-lambda-function-name --payload \'{"key": "value"}\' output.json', returnStdout: true).trim()
-                        echo "Lambda response: ${response}"
+                        echo "Invoking AWS Lambda Function: ${LAMBDA_FUNCTION_NAME}"
+                        def response = sh(script: """
+                            aws lambda invoke \
+                            --function-name ${LAMBDA_FUNCTION_NAME} \
+                            --region ${AWS_REGION} \
+                            --payload '{"subnet_id": "test-subnet"}' \
+                            --log-type Tail \
+                            --cli-binary-format raw-in-base64-out \
+                            output.json
+                        """, returnStdout: true).trim()
+                        
+                        // Read and display the response
+                        def output = readFile('output.json')
+                        echo "Lambda response: ${output}"
+                        
+                        // Check if the invocation was successful
+                        if (response.contains("StatusCode")) {
+                            echo "Lambda function invoked successfully!"
+                        } else {
+                            error "Lambda invocation failed: ${response}"
+                        }
                     } catch (Exception e) {
                         error "Lambda invocation failed: ${e.getMessage()}"
                     }
@@ -76,27 +95,15 @@ pipeline {
             }
         }
 
-//        stage("Invoke Lambda") {
-//            steps {
-//                script {
-//                    echo "Invoking AWS Lambda Function"
-//                    sh """
-//                        aws lambda invoke \
-//                        --function-name $LAMBDA_FUNCTION_NAME \
-//                        --region $AWS_REGION \
-//                        --log-type Tail output.json
-//                    """
-//                    echo "Lambda function invoked successfully!"
-//                }
-//            }
-//        }
-
         stage("Check CloudWatch Logs") {
             steps {
                 script {
                     echo "Fetching AWS Lambda Logs from CloudWatch"
                     sh """
-                        aws logs tail /aws/lambda/$LAMBDA_FUNCTION_NAME --region $AWS_REGION --since 5m --format short
+                        aws logs tail /aws/lambda/$LAMBDA_FUNCTION_NAME \
+                        --region $AWS_REGION \
+                        --since 5m \
+                        --format short
                     """
                 }
             }

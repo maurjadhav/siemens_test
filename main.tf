@@ -1,8 +1,28 @@
+# Data sources for existing resources
+data "aws_vpc" "vpc" {
+  id = "vpc-06b326e20d7db55f9" # Replace with your VPC ID
+}
+
+data "aws_nat_gateway" "nat" {
+  id = "nat-0a34a8efd5e420945" # Replace with your NAT Gateway ID
+}
+
+data "aws_iam_role" "lambda" {
+  name = "DevOps-Candidate-Lambda-Role" # Replace with your IAM role name
+}
+
+# Create zip file for Lambda function
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = "${path.module}/lambda_function.py"
+  output_path = "${path.module}/lambda_function.zip"
+}
+
 # Private Subnet inside existing VPC
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = data.aws_vpc.vpc.id
-  cidr_block              = "10.0.8.0/24"            # Choose any available subnet CIDR
-  availability_zone       = "ap-south-1a"
+  cidr_block              = "10.0.9.0/24" # Choose any available subnet CIDR
+  availability_zone       = "ap-south-1b"
   map_public_ip_on_launch = false
 
   tags = {
@@ -29,7 +49,7 @@ resource "aws_route_table_association" "private_assoc" {
   subnet_id      = aws_subnet.private_subnet.id
   route_table_id = aws_route_table.private_rt.id
 
-  depends_on = [aws_subnet.private_subnet]                # Ensures the subnet is created first
+  depends_on = [aws_subnet.private_subnet] # Ensures the subnet is created first
 }
 
 # Security Group for Lambda inside VPC
@@ -51,12 +71,13 @@ resource "aws_security_group" "lambda_sg" {
 
 # AWS Lambda Function inside the VPC
 resource "aws_lambda_function" "lambda_function" {
-  function_name = "ac"
-  role          = data.aws_iam_role.lambda.arn
-  handler       = "lambda_function.lambda_handler"
-  runtime       = "python3.11"
-  filename      = "lambda_function.zip"
-  timeout       = 60
+  function_name    = "ad"
+  role             = data.aws_iam_role.lambda.arn
+  handler          = "lambda_function.lambda_handler"
+  runtime          = "python3.11"
+  filename         = data.archive_file.lambda_zip.output_path
+  timeout          = 60
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
   environment {
     variables = {
