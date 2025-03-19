@@ -46,6 +46,29 @@ pipeline {
             }
         }
 
+        stage("TF Apply") {
+            steps {
+                script {
+                    echo "Executing Terraform Apply"
+                    sh "terraform apply -auto-approve tfplan"
+                }
+            }
+        }
+
+        stage("Invoke Lambda") {
+            steps {
+                script {
+                    echo "Invoking AWS Lambda Function"
+                    sh """
+                        aws lambda invoke \
+                        --function-name $LAMBDA_FUNCTION_NAME \
+                        --region $AWS_REGION \
+                        output.json
+                    """
+                }
+            }
+        }
+
     }
 
     post {
