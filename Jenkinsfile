@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
         TF_STATE_KEY = "Mayur.Jadhav"
-        LAMBDA_FUNCTION_NAME = "minimal_lambda1"
+        LAMBDA_FUNCTION_NAME = "mini_lambda"
     }
 
     stages {
