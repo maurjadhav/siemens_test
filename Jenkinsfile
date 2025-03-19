@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
         TF_STATE_KEY = "mayur.jadhav"
-        LAMBDA_FUNCTION_NAME = "p_function"
+        LAMBDA_FUNCTION_NAME = "prod_function"
     }
 
     stages {
@@ -51,7 +51,7 @@ pipeline {
                 echo "Invoking AWS Lambda Function"
                 sh """
                     aws lambda invoke --function-name $LAMBDA_FUNCTION_NAME --log-type Tail output.json
-                    jq -r '.LogResult' output.json | base64 --decode
+                    
                 """
             }
         }
