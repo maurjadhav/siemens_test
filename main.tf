@@ -29,9 +29,6 @@ resource "aws_route_table_association" "private_assoc" {
   subnet_id      = aws_subnet.private_subnet.id
   route_table_id = aws_route_table.private_rt.id
 
-  lifecycle {
-    prevent_destroy = true        # Prevents accidental deletion
-  }
 }
 
 # Security Group for Lambda
