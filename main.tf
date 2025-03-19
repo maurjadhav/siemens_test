@@ -1,7 +1,7 @@
-# Private Subnet 
+# Private Subnet inside existing VPC
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = data.aws_vpc.vpc.id
-  cidr_block              = "10.0.70.0/24" # Change if needed
+  cidr_block              = "10.0.20.0/24"            # Choose any available subnet CIDR
   availability_zone       = "ap-south-1a"
   map_public_ip_on_launch = false
 
@@ -10,7 +10,7 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
-# Route Table for Private Subnet
+# Route Table & Association with Private Subnet
 resource "aws_route_table" "private_rt" {
   vpc_id = data.aws_vpc.vpc.id
 
@@ -28,10 +28,9 @@ resource "aws_route_table" "private_rt" {
 resource "aws_route_table_association" "private_assoc" {
   subnet_id      = aws_subnet.private_subnet.id
   route_table_id = aws_route_table.private_rt.id
-
 }
 
-# Security Group for Lambda
+# Security Group for Lambda inside VPC
 resource "aws_security_group" "lambda_sg" {
   name_prefix = "lambda-sg"
   vpc_id      = data.aws_vpc.vpc.id
@@ -48,9 +47,9 @@ resource "aws_security_group" "lambda_sg" {
   }
 }
 
-# AWS Lambda Function
+# AWS Lambda Function inside the VPC
 resource "aws_lambda_function" "lambda_function" {
-  function_name = "qwerty_xyz123"
+  function_name = "minimal_lambda"
   role          = data.aws_iam_role.lambda.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.11"
@@ -59,8 +58,8 @@ resource "aws_lambda_function" "lambda_function" {
 
   environment {
     variables = {
-      SUBNET_ID = aws_subnet.private_subnet.id    # Dynamically pass subnet ID
-      NAME      = "mayur jadhav"
+      SUBNET_ID = aws_subnet.private_subnet.id
+      NAME      = "Mayur Jadhav"
       EMAIL     = "mr.jadhav1205@gmail.com"
     }
   }
@@ -71,9 +70,8 @@ resource "aws_lambda_function" "lambda_function" {
   }
 }
 
-
-# CloudWatch Log Group for Lambda
-resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.lambda_function.function_name}"
-  retention_in_days = 7
-}
+## CloudWatch Log Group for Lambda
+#resource "aws_cloudwatch_log_group" "lambda_log_group" {
+#  name              = "/aws/lambda/${aws_lambda_function.lambda_function.function_name}"
+#  retention_in_days = 7
+#}
