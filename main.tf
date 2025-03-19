@@ -36,6 +36,13 @@ resource "aws_security_group" "lambda_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
   tags = { Name = "Lambda-SG" }
 }
 
@@ -45,14 +52,14 @@ resource "aws_lambda_function" "lambda_function" {
   role          = data.aws_iam_role.lambda.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.11"
-  filename      = "lambda_function.zip"
+  filename      = "lambda_package.zip"
   timeout       = 60
 
   environment {
     variables = {
       SUBNET_ID = aws_subnet.private_subnet.id
-      NAME      = "Mayur Jadhav"
-      EMAIL     = "mr.jadhav1205@gmail.com"
+#      NAME      = "Mayur Jadhav"
+#      EMAIL     = "mr.jadhav1205@gmail.com"
     }
   }
 

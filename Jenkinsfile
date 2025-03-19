@@ -15,24 +15,19 @@ pipeline {
             }
         }
 
-        stage("Package Lambda") {
-            steps {
-                script {
-                    echo "Packaging Lambda function"
-                    sh "zip lambda_function.zip lambda_function.py"
-                }
-            }
-        }
+//        stage("Package Lambda") {
+//            steps {
+//                script {
+//                    echo "Packaging Lambda function"
+//                    sh "zip lambda_function.zip lambda_function.py"
+//                }
+//            }
+//        }
 
         stage("Terraform Init") {
             steps {
                 script {
-                    sh """
-                        terraform init \
-                        -backend-config="bucket=$S3_BUCKET" \
-                        -backend-config="key=$TF_STATE_KEY" \
-                        -backend-config="region=$AWS_REGION"
-                    """
+                    sh "terraform init"
                 }
             }
         }
