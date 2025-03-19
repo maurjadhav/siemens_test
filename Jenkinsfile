@@ -5,14 +5,14 @@ pipeline {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
         TF_STATE_KEY = "mayur.jadhav"
-        LAMBDA_FUNCTION_NAME = "mayur_function3"
+        LAMBDA_FUNCTION_NAME = "mayur_fun"
     }
 
     stages {
         stage("Package Lambda") {
             steps {
                 echo "Packaging Lambda function"
-                sh "zip xyz_function.zip lambda_function.py"
+                sh "zip lambda_function.zip lambda_function.py"
             }
         }
 

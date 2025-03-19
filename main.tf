@@ -49,18 +49,18 @@ resource "aws_security_group" "lambda_sg" {
 }
 
 # AWS Lambda Function
-resource "aws_lambda_function" "mayur_function3" {
-  function_name = "mayur_function3"
+resource "aws_lambda_function" "lambda_function" {
+  function_name = "mayur_fun"
   role          = data.aws_iam_role.lambda.arn
-  handler       = "mayur_function3.lambda_handler"
+  handler       = "lambda_function.lambda_handler"
   runtime       = "python3.11"
-  filename      = "xyz_function.zip"
+  filename      = "lambda_function.zip"
   timeout       = 20
 
   environment {
     variables = {
       SUBNET_ID = aws_subnet.private_subnet.id    # Dynamically pass subnet ID
-      NAME      = "Mayur Jadhav"
+      NAME      = "mayur jadhav"
       EMAIL     = "mr.jadhav1205@gmail.com"
     }
   }
@@ -74,6 +74,6 @@ resource "aws_lambda_function" "mayur_function3" {
 
 # CloudWatch Log Group for Lambda
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.mayur_function3.function_name}"
+  name              = "/aws/lambda/${aws_lambda_function.lambda_function.function_name}"
   retention_in_days = 7
 }
