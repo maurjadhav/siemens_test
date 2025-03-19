@@ -49,12 +49,12 @@ resource "aws_security_group" "lambda_sg" {
 }
 
 # AWS Lambda Function
-resource "aws_lambda_function" "lambda_function" {
-  function_name = "mayur_new_fun"
+resource "aws_lambda_function" "lambda_function45" {
+  function_name = "your_function"
   role          = data.aws_iam_role.lambda.arn
-  handler       = "lambda_function.lambda_handler"
+  handler       = "lambda_function45.lambda_handler"
   runtime       = "python3.11"
-  filename      = "lambda_function.zip"
+  filename      = "lambda_function45.zip"
   timeout       = 60
 
   environment {
@@ -74,6 +74,6 @@ resource "aws_lambda_function" "lambda_function" {
 
 # CloudWatch Log Group for Lambda
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.lambda_function.function_name}"
+  name              = "/aws/lambda/${aws_lambda_function.lambda_function45.function_name}"
   retention_in_days = 7
 }
