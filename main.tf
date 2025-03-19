@@ -1,6 +1,6 @@
 # Private Subnet 
 resource "aws_subnet" "private_subnet" {
-  vpc_id                  = data.aws_vpc.existing_vpc.id
+  vpc_id                  = data.aws_vpc.vpc.id
   cidr_block              = "10.0.10.0/24" # Change if needed
   availability_zone       = "ap-south-1a"
   map_public_ip_on_launch = false
@@ -12,11 +12,11 @@ resource "aws_subnet" "private_subnet" {
 
 # Route Table for Private Subnet
 resource "aws_route_table" "private_rt" {
-  vpc_id = data.aws_vpc.existing_vpc.id
+  vpc_id = data.aws_vpc.vpc.id
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.aws_nat_gateway.nat_gateway.id
+    nat_gateway_id = data.aws_nat_gateway.nat.id
   }
 
   tags = {
@@ -33,7 +33,7 @@ resource "aws_route_table_association" "private_assoc" {
 # Security Group for Lambda
 resource "aws_security_group" "lambda_sg" {
   name_prefix = "lambda-sg"
-  vpc_id      = data.aws_vpc.existing_vpc.id
+  vpc_id      = data.aws_vpc.vpc.id
 
   egress {
     from_port   = 0
