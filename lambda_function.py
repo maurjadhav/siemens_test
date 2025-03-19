@@ -20,14 +20,26 @@ def lambda_handler(event, context):
         email = os.getenv("EMAIL", "mr.jadhav1205@gmail.com")
 
         if not subnet_id:
-            raise ValueError("Missing SUBNET_ID in environment variables")
+            logger.error("Missing SUBNET_ID in environment variables")
+            return {
+                "statusCode": 400,  # Use 400 for client errors
+                "body": json.dumps({"error": "Missing SUBNET_ID"}),
+            }
 
         # Create request payload
         payload = {"subnet_id": subnet_id, "name": name, "email": email}
 
         # Send POST request
-        response = requests.post(API_URL, headers=HEADERS, json=payload)
-        
+        try:
+            response = requests.post(API_URL, headers=HEADERS, json=payload)
+            response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
+        except requests.exceptions.RequestException as e:
+            logger.error(f"API request failed: {e}")
+            return {
+                "statusCode": 500,
+                "body": json.dumps({"error": "API request failed"}),
+            }
+
         # Log API response
         logger.info(f"API Response: {response.text}")
 
@@ -37,9 +49,12 @@ def lambda_handler(event, context):
         return {
             "statusCode": response.status_code,
             "body": response.text,
-            "logResult": log_result  # Base64 encoded log output for Jenkins
+            "logResult": log_result,  # Base64 encoded log output for Jenkins
         }
 
     except Exception as e:
-        logger.error(f"Error: {str(e)}", exc_info=True)
-        return {"statusCode": 500, "body": json.dumps({"error": "Internal Server Error"})}
+        logger.error(f"Unexpected error: {str(e)}", exc_info=True)
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "Internal Server Error"}),
+        }
