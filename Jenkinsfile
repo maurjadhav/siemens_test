@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
         TF_STATE_KEY = "mayur.jadhav"
-        LAMBDA_FUNCTION_NAME = "invoke_api_lambda"
+        LAMBDA_FUNCTION_NAME = "old_function"
     }
 
     stages {
@@ -44,7 +44,6 @@ pipeline {
                 echo "Executing Terraform Apply"
                 sh "terraform apply -auto-approve"
             }
-            dependsOn(["Package Lambda", "Terraform Plan"])             // Ensures Apply runs after Lambda is packaged & Terraform plan
         }
 
         stage("Invoke Lambda") {
