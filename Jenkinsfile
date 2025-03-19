@@ -44,6 +44,11 @@ pipeline {
                 echo "Executing Terraform Apply"
                 sh "terraform apply -auto-approve"
             }
+            when {
+                beforeAgent true
+                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+            }
+            dependsOn(["Package Lambda", "Terraform Plan"])             // Ensures Apply runs after Lambda is packaged & Terraform plan
         }
 
         stage("Invoke Lambda") {
