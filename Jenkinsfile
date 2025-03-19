@@ -73,11 +73,17 @@ pipeline {
                         aws lambda invoke \
                         --function-name $LAMBDA_FUNCTION_NAME \
                         --region $AWS_REGION \
-                        output.json
+                        --log-type Tail \
+                        output.json > lambda_response.json
+
+                        # Extract and decode the LogResult
+                        LOG_RESULT=\$(jq -r '.LogResult' lambda_response.json)
+                        echo \$LOG_RESULT | base64 --decode
                     """
                 }
             }
         }
+
     }
 
     post {
