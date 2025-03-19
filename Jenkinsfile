@@ -34,19 +34,23 @@ pipeline {
         }
 
         stage("Terraform Validate") {
+            echo "Executing Terraform Validation"
             steps { sh "terraform validate" }
         }
 
         stage("Terraform Plan") {
+            echo "Executing Terraform Plan"
             steps { sh "terraform plan -out=tfplan" }
         }
 
         stage("Terraform Apply") {
+            echo "Executing Terraform Apply"
             steps { sh "terraform apply -auto-approve tfplan" }
         }
 
         stage("Invoke Lambda") {
             steps {
+                echo "Executing Lambda Invoke"
                 sh """
                     aws lambda invoke \
                     --function-name $LAMBDA_FUNCTION_NAME \
