@@ -1,8 +1,8 @@
 # Private Subnet inside existing VPC
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = data.aws_vpc.vpc.id
-  cidr_block              = "10.0.50.0/24"            # Choose any available subnet CIDR
-  availability_zone       = "ap-south-1a"
+  cidr_block              = "10.0.40.0/24"            # Choose any available subnet CIDR
+  availability_zone       = "ap-south-1b"
   map_public_ip_on_launch = false
 
   tags = {
@@ -29,7 +29,7 @@ resource "aws_route_table_association" "private_assoc" {
   subnet_id      = aws_subnet.private_subnet.id
   route_table_id = aws_route_table.private_rt.id
 
-  depends_on = [aws_subnet.private_subnet] # Ensures the subnet is created first
+  depends_on = [aws_subnet.private_subnet]                # Ensures the subnet is created first
 }
 
 # Security Group for Lambda inside VPC
@@ -51,7 +51,7 @@ resource "aws_security_group" "lambda_sg" {
 
 # AWS Lambda Function inside the VPC
 resource "aws_lambda_function" "lambda_function" {
-  function_name = "lambda"
+  function_name = "lambda_mini"
   role          = data.aws_iam_role.lambda.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.11"
