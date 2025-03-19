@@ -51,7 +51,7 @@ pipeline {
                 echo "Invoking AWS Lambda Function"
                 sh """
                     aws lambda invoke --function-name $LAMBDA_FUNCTION_NAME --log-type Tail output.json
-                    
+                    jq -r '.LogResult' output.json | base64 --decode
                 """
             }
         }
