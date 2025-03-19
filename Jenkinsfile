@@ -11,24 +11,37 @@ pipeline {
     stages {
         stage("Package Lambda") {
             steps {
+                echo "Packaging Lambda function"
                 sh "zip lambda_function.zip lambda_function.py"
             }
         }
 
         stage("Terraform Init") {
             steps {
+                echo "Executing Terraform Init"
                 sh "terraform init"
+            }
+        }
+
+        stage("Terraform Validate") {
+            steps {
+                script {
+                    echo "Validating Terraform Code"
+                    sh "terraform validate"
+                }
             }
         }
 
         stage("Terraform Plan") {
             steps {
+                echo "Executing Terraform Plan"
                 sh "terraform plan"
             }
         }
 
         stage("Terraform Apply") {
             steps {
+                echo "Executing Terraform Apply"
                 sh "terraform apply -auto-approve"
             }
         }
