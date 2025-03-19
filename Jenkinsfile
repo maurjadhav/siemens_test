@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    triggers {
+        pollSCM('H/5 * * * *')          // Runs every 5 minutes
+    }
+
+
     environment {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
