@@ -51,7 +51,7 @@ resource "aws_security_group" "lambda_sg" {
 # AWS Lambda Function
 resource "aws_lambda_function" "xyz_function" {
   function_name = "api_lambda"
-  role          = data.aws_iam_role.lambda
+  role          = data.aws_iam_role.lambda.arn
   handler       = "xyz_function.lambda_handler"
   runtime       = "python3.11"
   filename      = "xyz_function.zip"
