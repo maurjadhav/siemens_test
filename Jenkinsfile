@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
         TF_STATE_KEY = "Mayur.Jadhav"
-        LAMBDA_FUNCTION_NAME = "mini_lambda"
+        LAMBDA_FUNCTION_NAME = "min_lambda"
     }
 
     stages {
@@ -49,7 +49,7 @@ pipeline {
             steps {
                 script {
                     echo "Executing Terraform Plan"
-                    sh "terraform plan -out=tfplan"
+                    sh "terraform plan"
                 }
             }
         }
@@ -58,7 +58,7 @@ pipeline {
             steps {
                 script {
                     echo "Executing Terraform Apply"
-                    sh "terraform apply -auto-approve tfplan"
+                    sh "terraform apply -auto-approve"
                 }
             }
         }
