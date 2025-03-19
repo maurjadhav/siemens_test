@@ -1,8 +1,8 @@
 # Private Subnet
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = data.aws_vpc.vpc.id
-  cidr_block              = "10.0.55.0/24"
-  availability_zone       = "ap-south-1a"
+  cidr_block              = "10.0.10.0/24"
+  availability_zone       = "ap-south-1b"
   map_public_ip_on_launch = false
 
   tags = { Name = "Private-Subnet" }
@@ -41,7 +41,7 @@ resource "aws_security_group" "lambda_sg" {
 
 # AWS Lambda Function
 resource "aws_lambda_function" "lambda_function" {
-  function_name = "new_mini_lambda"
+  function_name = "new_mini_lambda_1"
   role          = data.aws_iam_role.lambda.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.11"
