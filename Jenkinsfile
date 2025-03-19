@@ -2,13 +2,19 @@ pipeline {
     agent any
 
     environment {
-//        AWS_REGION = "ap-south-1"
-//        S3_BUCKET  = "467.devops.candidate.exam"
-//        TF_STATE_KEY = "Mayur.Jadhav"
+        AWS_REGION = "ap-south-1"
+        S3_BUCKET  = "467.devops.candidate.exam"
+        TF_STATE_KEY = "Mayur.Jadhav"
         LAMBDA_FUNCTION_NAME = "minimal_lambda"
     }
 
     stages {
+        stage("Checkout Code") {
+            steps {
+                git branch: 'main', url: 'https://github.com/maurjadhav/siemens_test.git'
+            }
+        }
+
         stage("Package Lambda") {
             steps {
                 echo "Packaging Lambda function"
@@ -18,8 +24,15 @@ pipeline {
 
         stage("Terraform Init") {
             steps {
-                echo "Executing Terraform Init"
-                sh "terraform init"
+                script {
+                    echo "Initializing Terraform Backend"
+                    sh """
+                        terraform init \
+                        -backend-config="bucket=$S3_BUCKET" \
+                        -backend-config="key=$TF_STATE_KEY" \
+                        -backend-config="region=$AWS_REGION"
+                    """
+                }
             }
         }
 
@@ -34,26 +47,44 @@ pipeline {
 
         stage("Terraform Plan") {
             steps {
-                echo "Executing Terraform Plan"
-                sh "terraform plan"
+                script {
+                    echo "Executing Terraform Plan"
+                    sh "terraform plan -out=tfplan"
+                }
             }
         }
 
         stage("Terraform Apply") {
             steps {
-                echo "Executing Terraform Apply"
-                sh "terraform apply -auto-approve"
+                script {
+                    echo "Executing Terraform Apply"
+                    sh "terraform apply -auto-approve tfplan"
+                }
             }
         }
 
         stage("Invoke Lambda") {
             steps {
-                echo "Invoking AWS Lambda Function"
-                sh """
-                    aws lambda invoke --function-name $LAMBDA_FUNCTION_NAME --log-type Tail output.json
-                    jq -r '.LogResult' output.json | base64 --decode
-                """
+                script {
+                    echo "Invoking AWS Lambda Function"
+                    sh """
+                        aws lambda invoke \
+                        --function-name $LAMBDA_FUNCTION_NAME \
+                        --region $AWS_REGION \
+                        --log-type Tail output.json
+                    """
+                    echo "Lambda function invoked successfully!"
+                }
             }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline executed successfully!"
+        }
+        failure {
+            echo "Pipeline execution failed!"
         }
     }
 }
