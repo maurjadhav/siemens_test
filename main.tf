@@ -1,7 +1,7 @@
 # Private Subnet 
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = data.aws_vpc.vpc.id
-  cidr_block              = "10.0.15.0/24" # Change if needed
+  cidr_block              = "10.0.85.0/24" # Change if needed
   availability_zone       = "ap-south-1a"
   map_public_ip_on_launch = false
 
@@ -50,7 +50,7 @@ resource "aws_security_group" "lambda_sg" {
 
 # AWS Lambda Function
 resource "aws_lambda_function" "lambda_function" {
-  function_name = "prod_function"
+  function_name = "dev_function"
   role          = data.aws_iam_role.lambda.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.10"
