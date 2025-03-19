@@ -51,7 +51,7 @@ pipeline {
             steps {
                 script {
                     echo "Executing Terraform Plan"
-                    sh "terraform plan -out=tfplan"
+                    sh "terraform plan"
                 }
             }
         }
@@ -60,7 +60,7 @@ pipeline {
             steps {
                 script {
                     echo "Executing Terraform Apply"
-                    sh "terraform apply -auto-approve tfplan"
+                    sh "terraform apply -auto-approve"
                 }
             }
         }
