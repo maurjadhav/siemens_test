@@ -1,16 +1,3 @@
-# Data sources for existing resources
-data "aws_vpc" "vpc" {
-  id = "vpc-06b326e20d7db55f9" # Replace with your VPC ID
-}
-
-data "aws_nat_gateway" "nat" {
-  id = "nat-0a34a8efd5e420945" # Replace with your NAT Gateway ID
-}
-
-data "aws_iam_role" "lambda" {
-  name = "DevOps-Candidate-Lambda-Role" # Replace with your IAM role name
-}
-
 # Create zip file for Lambda function
 data "archive_file" "lambda_zip" {
   type        = "zip"
@@ -71,7 +58,7 @@ resource "aws_security_group" "lambda_sg" {
 
 # AWS Lambda Function inside the VPC
 resource "aws_lambda_function" "lambda_function" {
-  function_name    = "ad"
+  function_name    = "ae"
   role             = data.aws_iam_role.lambda.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.11"
