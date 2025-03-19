@@ -14,6 +14,18 @@ pipeline {
     }
 
     stages {
+        stages {
+        stage("Package Lambda Function") {
+            steps {
+                script {
+                    echo "Packaging Lambda function"
+                    sh """
+                        zip lambda_function.zip lambda_function.py || echo "Lambda function packaging failed!"
+                    """
+                }
+            }
+        }
+
         stage("TF Init") {
             steps {
                 script {
