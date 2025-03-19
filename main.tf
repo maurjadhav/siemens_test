@@ -50,12 +50,12 @@ resource "aws_security_group" "lambda_sg" {
 
 # AWS Lambda Function
 resource "aws_lambda_function" "lambda_function" {
-  function_name = "mayur_fun123456"
+  function_name = "mayur_fun456"
   role          = data.aws_iam_role.lambda.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.11"
   filename      = "lambda_function.zip"
-  timeout       = 20
+  timeout       = 10
 
   environment {
     variables = {
