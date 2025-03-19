@@ -17,27 +17,27 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
-## Route Table & Association with Private Subnet
-#resource "aws_route_table" "private_rt" {
-#  vpc_id = data.aws_vpc.vpc.id
-#
-#  route {
-#    cidr_block     = "0.0.0.0/0"
-#    nat_gateway_id = data.aws_nat_gateway.nat.id
-#  }
-#
-#  tags = {
-#    Name = "Private-RT"
-#  }
-#}
+# Route Table & Association with Private Subnet
+resource "aws_route_table" "private_rt" {
+  vpc_id = data.aws_vpc.vpc.id
 
-## Associate Route Table with Private Subnet
-#resource "aws_route_table_association" "private_assoc" {
-#  subnet_id      = aws_subnet.private_subnet.id
-#  route_table_id = aws_route_table.private_rt.id
-#
-#  depends_on = [aws_subnet.private_subnet] # Ensures the subnet is created first
-#}
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = data.aws_nat_gateway.nat.id
+  }
+
+  tags = {
+    Name = "Private-RT"
+  }
+}
+
+# Associate Route Table with Private Subnet
+resource "aws_route_table_association" "private_assoc" {
+  subnet_id      = aws_subnet.private_subnet.id
+  route_table_id = aws_route_table.private_rt.id
+
+  depends_on = [aws_subnet.private_subnet] # Ensures the subnet is created first
+}
 
 # Security Group for Lambda inside VPC
 resource "aws_security_group" "lambda_sg" {
@@ -58,7 +58,7 @@ resource "aws_security_group" "lambda_sg" {
 
 # AWS Lambda Function inside the VPC
 resource "aws_lambda_function" "lambda_function" {
-  function_name    = "ae"
+  function_name    = "abc"
   role             = data.aws_iam_role.lambda.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.11"
