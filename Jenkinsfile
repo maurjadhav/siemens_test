@@ -2,9 +2,8 @@ pipeline {
     agent any
 
 //    triggers {
-//        pollSCM('H/5 * * * *')          // Runs every 5 minutes
+//        pollSCM('H/5 * * * *')  // Uncomment to run every 5 minutes
 //    }
-
 
     environment {
         AWS_REGION = "ap-south-1"
@@ -14,7 +13,6 @@ pipeline {
     }
 
     stages {
-        stages {
         stage("Package Lambda Function") {
             steps {
                 script {
@@ -80,7 +78,6 @@ pipeline {
                 }
             }
         }
-
     }
 
     post {
