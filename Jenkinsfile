@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
         TF_STATE_KEY = "mayur.jadhav"
-        LAMBDA_FUNCTION_NAME = "mayur_fun_new987"
+        LAMBDA_FUNCTION_NAME = "mayur_new_fun"
     }
 
     stages {
