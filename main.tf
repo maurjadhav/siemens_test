@@ -51,7 +51,7 @@ resource "aws_security_group" "lambda_sg" {
 
 # AWS Lambda Function inside the VPC
 resource "aws_lambda_function" "lambda_function" {
-  function_name = "lambda_mini"
+  function_name = "mini"
   role          = data.aws_iam_role.lambda.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.11"
