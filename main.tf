@@ -1,8 +1,8 @@
 # Private Subnet inside existing VPC
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = data.aws_vpc.vpc.id
-  cidr_block              = "10.0.40.0/24"            # Choose any available subnet CIDR
-  availability_zone       = "ap-south-1b"
+  cidr_block              = "10.0.4.0/24"            # Choose any available subnet CIDR
+  availability_zone       = "ap-south-1a"
   map_public_ip_on_launch = false
 
   tags = {
