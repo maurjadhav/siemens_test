@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-    triggers {
-        pollSCM('H/5 * * * *')          // Runs every 5 minutes
-    }
+//    triggers {
+//        pollSCM('H/5 * * * *')          // Runs every 5 minutes
+//    }
 
 
     environment {
