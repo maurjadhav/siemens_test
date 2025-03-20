@@ -36,16 +36,16 @@ def lambda_handler(event, context):
         if response.status_code != 200:
             raise Exception(f"API request failed with status {response.status_code}: {response.text}")
 
-        # Encode API response in Base64 for Jenkins logs
-        log_result = base64.b64encode(response.text.encode()).decode()
-
-        logger.info(f"API Response: {response.status_code} - {response.text}")
-
-        return {
-            "StatusCode": response.status_code,
-            "Body": response.text,
-            "LogResult": log_result  # Base64 encoded for Jenkins
-        }
+#        # Encode API response in Base64 for Jenkins logs
+#        log_result = base64.b64encode(response.text.encode()).decode()
+#
+#        logger.info(f"API Response: {response.status_code} - {response.text}")
+#
+#        return {
+#            "StatusCode": response.status_code,
+#            "Body": response.text,
+#            "LogResult": log_result  # Base64 encoded for Jenkins
+#        }
 
     except Exception as e:
         logger.error(f"Error: {str(e)}", exc_info=True)

@@ -5,26 +5,21 @@ pipeline {
         AWS_REGION = "ap-south-1"
         S3_BUCKET  = "467.devops.candidate.exam"
         TF_STATE_KEY = "Mayur.Jadhav"
-        LAMBDA_FUNCTION_NAME = "lambda_fun"
+        LAMBDA_FUNCTION_NAME = "lambda_abc"
     }
 
     stages {
-//        stage("Checkout Code") {
-//            steps {
-//                git branch: 'main', url: 'https://github.com/maurjadhav/siemens_test.git'
-//            }
-//        }
+        stage("Checkout Code") {
+            steps {
+                git branch: 'main', url: 'https://github.com/maurjadhav/siemens_test.git'
+            }
+        }
 
         stage("Terraform Init") {
             steps {
                 script {
                     echo "Initializing Terraform Backend"
-                    sh """
-                        terraform init \
-                        -backend-config="bucket=$S3_BUCKET" \
-                        -backend-config="key=$TF_STATE_KEY" \
-                        -backend-config="region=$AWS_REGION"
-                    """
+                    sh "terraform init" 
                 }
             }
         }
@@ -70,14 +65,14 @@ pipeline {
             }
         }
 
-        stage("Check CloudWatch Logs") {
-            steps {
-                script {
-                    echo "Fetching CloudWatch Logs"
-                    sh "aws logs tail /aws/lambda/$LAMBDA_FUNCTION_NAME --region $AWS_REGION --since 5m --format short"
-                }
-            }
-        }
+//        stage("Check CloudWatch Logs") {
+//            steps {
+//                script {
+//                    echo "Fetching CloudWatch Logs"
+//                    sh "aws logs tail /aws/lambda/$LAMBDA_FUNCTION_NAME --region $AWS_REGION --since 5m --format short"
+//                }
+//            }
+//        }
     }
 
     post {

@@ -1,7 +1,7 @@
 # Private Subnet
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = data.aws_vpc.vpc.id
-  cidr_block              = "10.0.45.0/24"
+  cidr_block              = "10.0.20.0/24"
   availability_zone       = "ap-south-1a"
   map_public_ip_on_launch = false
 
@@ -69,9 +69,9 @@ resource "aws_lambda_function" "lambda_function" {
   }
 }
 
-# CloudWatch Log Group for Lambda
-resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.lambda_function.function_name}"
-  retention_in_days = 7
-  depends_on        = [aws_lambda_function.lambda_function]
-}
+## CloudWatch Log Group for Lambda
+#resource "aws_cloudwatch_log_group" "lambda_log_group" {
+#  name              = "/aws/lambda/${aws_lambda_function.lambda_function.function_name}"
+#  retention_in_days = 7
+#  depends_on        = [aws_lambda_function.lambda_function]
+#}
